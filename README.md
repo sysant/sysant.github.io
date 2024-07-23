@@ -1,2 +1,1 @@
-# worklinux
-working linux  
+个人学习脚本
