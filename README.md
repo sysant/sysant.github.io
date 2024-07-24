@@ -17,7 +17,7 @@
 
 **[在线预览 &rarr;](https://sysant.github.io)**
 
-![screenshot home](https://mazhuang.org/assets/images/screenshots/home.png)
+![screenshot home](https://sysant.github.io/assets/images/screenshots/home.png)
 
 ## Fork 指南
 
