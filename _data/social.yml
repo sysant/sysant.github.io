@@ -1,27 +1,20 @@
 - sitename: GitHub
-  name: mzlogin
-  url: https://github.com/mzlogin
+  name: sysnat 
+  url: https://sysant.github.io
 
 - sitename: 掘金
   name: mzlogin
   url: http://gold.xitu.io/user/570ddaeb2e958a005c63b2da
 
-- sitename: LinkedIn
-  name: mazhuang
-  url: https://www.linkedin.com/in/mazhuang
-
 - sitename: 博客
-  name: 码志
-  url: http://mazhuang.org
+  name: sysnat
+  url: htts://sysant.github.io
 
-- sitename: 微博
-  name: mzlogin
-  url: http://weibo.com/mzlogin
 
-- sitename: 知乎
-  name: mzlogin
-  url: http://www.zhihu.com/people/mzlogin
+- sitename: 51cto 
+  name: dyc2005
+  url: https://blog.51cto.com/dyc2005
 
-- sitename: 豆瓣
-  name: 闷骚的程序员
-  url: http://www.douban.com/people/freedim
+- sitename: 小程序
+  name: 深沉的运维
+  url: http://http://47.121.194.76:10800/
