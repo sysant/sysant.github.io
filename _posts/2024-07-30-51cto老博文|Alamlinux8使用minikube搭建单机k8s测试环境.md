@@ -12,14 +12,7 @@ mindmap: false
 mindmap2: false
 ---
 
-title: Alamlinux8使用minikube搭建单机k8s测试环境
----
-
-
 基于Alamlinux8 通过minikube搭建单机k8s测试环境
-===============================
-
-
 
 一、什么是minikube
 -----------
@@ -38,8 +31,6 @@ Internet connection
 Container or virtual machine manager, such as: Docker, QEMU, Hyperkit, Hyper\-V, KVM, Parallels, Podman, VirtualBox, or VMware Fusion/Workstation
 
 二、本次测试环境
-------
-
 
 alamlinux8.8 minikube-1.31.2 docker-ce-24.0.6-1  
 
