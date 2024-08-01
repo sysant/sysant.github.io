@@ -1,0 +1,751 @@
+---
+layout: post
+title: 
+categories: [51cto老博文]
+description: 
+keywords: 
+mermaid: false
+sequence: false
+flow: false
+mathjax: false
+mindmap: false
+mindmap2: false
+---
+
+title: Ansible入门与playbook实战
+
+
+
+ ## 一、简要
+
+**1、关于Ansible**  
+
+Ansible是一个部署一群远程主机的工具;Ansible通过SSH协议实现远程节点和管理节点之间的通信。理论上说，只要管理员通过ssh登录到一台远程主机上能做的操作，Ansible都可以做到。Ansible是python开发的,故依赖一些python库和组件,如:paramiko，PyYaml和jinja三个关键组件;
+
+
+**2、ansible架构:**  
+
+![Ansible入门与playbook实战](/images/Ansible入门与playbook实战_ansible.png)  
+
+右边绿色部分是被管理的主机(虚拟机,物理机,云主机等)从以上架构图中可以看出  
+
+ansible是由主机清单(配置),playbook(配置),以及各模块插件组成;  
+
+简单的说就是,用户(管理员)通过ansible的主机清单配置或Playbook配置(一组任务),调用ansible的各种模块及参数来对  
+
+清单中的主机进行统一管理;
+
+
+**3、测试环境**  
+
+本次测试环境:  
+
+ansible: CentOS7.4_x64 172.16.3.167 epel yum安装ansible  
+
+node1: 172.16.3.152 CenOS7.2_x64  
+
+node2: 172.16.3.216 CentOS7.2_x64  
+
+从ansible上生成ssh私钥并把对应公钥同步到两台node主机上,实现无密钥登录管理(推荐)  
+
+`[root@ansible ~]# ssh-keygen -t rsa`  
+
+直接回车生成私钥;  
+
+同步到到两台node上
+
+
+登录后复制  
+```
+[root@ansible ~]# ssh-copy-id -i ~/.ssh/id_rsa  172.16.3.216
+[root@ansible ~]# ssh-copy-id -i ~/.ssh/id_rsa  172.16.3.152
+* 1.
+* 2.
+
+```
+
+注意同步过程需要输入yes和各自的root密码即可;此进可直接ssh [root@172\.16\.3\.152](mailto:root@172.16.3.152) 就无密码登录上去啦!  
+
+配置ansible的主机清单,即把node1与node2主机添加到管理清单中
+
+
+登录后复制  
+```
+[root@ansible ~]# egrep -v '(^$|^#)' /etc/ansible/hosts
+[websrvs]
+172.16.3.152
+172.16.3.216
+* 1.
+* 2.
+* 3.
+* 4.
+
+```
+
+到此处配置的环境完成!
+
+
+**4、安装**  
+
+目前,只要机器上安装了 Python 2\.6 或 Python 2\.7 (windows系统不可以做控制主机),都可以运行Ansible.  
+
+安装ansible很简单,可通过git从githu上直接获取代码,也可以像redhat/CentOS上通过yum进行安装,
+
+
+登录后复制  
+```
+[root@ansible ~]# yum install epel-release -y
+[root@ansible ~]# yum install ansible -y
+#查看版本
+[root@ansible ~]# ansible --version
+ansible 2.4.2.0
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = [u'/root/.ansible/plugins/modules', u'/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python2.7/site-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 2.7.5 (default, Nov 20 2015, 02:00:19) [GCC 4.8.5 20150623 (Red Hat 4.8.5-4)]
+
+```
+
+## 二、配置及获取帮助说明
+
+通过rpm \-ql ansible可以看到有很多文件,主要是配置文件和和可执行文件,以及所依赖的python库文件  
+
+**1、配置与执行文件说明**  
+
+ansible的主配置文件  
+
+/etc/ansible/ansible.cfg  
+
+这个文件主要定义了roles\_path路径,主机清单路径,连接清单中的主机方式等配置,这些大部的默认配置已经足够我们平时使用,如需要特别配置可以自行去修改;  
+
+/etc/ansible/hosts  
+
+这个配置文件就是默认主机清单配置文件,可通过ansible.cfg重新定义的;  
+
+如定义一组主机:
+
+
+登录后复制  
+```
+[root@ansible ~]# egrep -v '(^$|^#)' /etc/ansible/hosts
+[websrvs]
+172.16.3.152
+172.16.3.216
+
+```
+
+除了以上两个重要的配置文件还有三个重要的可执行文件分别是:  
+
+ansible 主执行程序,一般用于命令行下执行  
+
+ansible\-playbook 执行playbook中的任务  
+
+ansible\-doc 获取各模块的帮助信息
+
+
+**2、ansible 使用格式**  
+
+ansible
+
+
+登录后复制  
+```
+HOST-PATTERN      #匹配主机模式,如all表示所有主机
+-m MOD_NAME       #模块名   如:ping
+-a MOD_ARGS        #模块执行的参数
+-f FORKS                  #生成几个子进行程执行
+-C                               #(不执行，模拟跑)
+-u Username             #某主机的用户名
+-c  CONNection        #连接方式（default smart）    
+
+完整示例:
+[root@ansible ~]# ansible all -m shell -a "ifconfig|grep enp0s3"
+172.16.3.152 | SUCCESS | rc=0 >>
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+
+172.16.3.216 | SUCCESS | rc=0 >>
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+
+```
+
+**3、ansible\-doc 获取帮助信息**  
+
+ansible模块比较多,可以通过ansible\-doc \-\-help 显示帮助信息  
+
+ansible doc \-l 获取所有当前版本下的可用模块及简要信息  
+
+ansible\-doc \-s 模块名 获取指定模块帮助信息说明\`\`
+
+
+## 三、ansible常用模块
+
+**1、copy模块**  
+
+从本地copy文件分发到目录主机路径  
+
+参数说明:  
+
+src\= 源文件路径  
+
+dest\= 目标路径  
+
+注意src\= 路径后面带/ 表示带里面的所有内容复制到目标目录下，不带/是目录递归复制过去  
+
+content\= 自行填充的文件内容  
+
+owner 属主  
+
+group 属组  
+
+mode权限  
+
+示例:
+
+
+登录后复制  
+```
+ansible all  -m copy -a "src=/etc/fstab dest=/tmp/fstab.ansible mode=600"
+ansible all -m copy -a "content='hi there\n' dest=/tmp/hi.txt"
+到node1上查看
+[root@node1 tmp]# ll
+-rw------- 1 root root 465 2月   9 14:59 fstab.ansible
+-rw-r--r-- 1 root root   9 2月   9 14:58 hi.txt
+
+```
+
+**2、fetch模块**  
+
+从远程主机拉取文件到本地  
+
+示例
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all  -m fetch -a "src=/tmp/hi.txt dest=/tmp"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "checksum": "279d9035886d4c0427549863c4c2101e4a63e041", 
+    "dest": "/tmp/172.16.3.152/tmp/hi.txt", 
+    "md5sum": "12f6bb1941df66b8f138a446d4e8670c", 
+    "remote_checksum": "279d9035886d4c0427549863c4c2101e4a63e041", 
+    "remote_md5sum": null
+}
+.......省略
+```
+
+说明:fetch使用很简单,src和dest,dest只要指定一个接收目录,默认会在后面加上远程主机及src的路径
+
+
+**3、command模块**  
+
+在远程主机上执行命令,属于裸执行,非键值对显示;不进行shell解析;  
+
+示例1:
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m command -a "ifconfig"
+172.16.3.152 | SUCCESS | rc=0 >>
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.16.3.152  netmask 255.255.255.0  broadcast 172.16.3.255
+        .....省略.....
+172.16.3.216 | SUCCESS | rc=0 >>
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.16.3.216  netmask 255.255.255.0  broadcast 172.16.3.255
+        .....省略.....
+
+```
+
+示例2:
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m command -a "ifconfig|grep lo"
+172.16.3.152 | FAILED | rc=2 >>
+[Errno 2] 没有那个文件或目录
+
+172.16.3.216 | FAILED | rc=2 >>
+[Errno 2] 没有那个文件或目录
+
+```
+
+这就是因为command模块不是shell解析属于裸执行导致的  
+
+为了能达成以上类似shell中的解析,ansible有一个shell模块;
+
+
+**4、shell模块**  
+
+由于commnad只能执行裸命令(即系统环境中有支持的命令),至于管道之类的功能不支持,  
+
+shell模块可以做到  
+
+示例:
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m shell -a "ifconfig|grep lo"
+172.16.3.152 | SUCCESS | rc=0 >>
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        loop  txqueuelen 0  (Local Loopback)
+
+172.16.3.216 | SUCCESS | rc=0 >>
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        loop  txqueuelen 0  (Local Loopback)
+
+
+```
+
+**5、file模块**  
+
+设置文件属性(创建文件)  
+
+常用参数:  
+
+path目标路径  
+
+state directory为目录,link为软件链接  
+
+group 目录属组  
+
+owner 属主  
+
+等,其他参数通过ansible\-doc \-s file 获取  
+
+示例1:创建目录
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m file -a "path=/var/tmp/hello.dir state=directory"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "gid": 0, 
+    "group": "root", 
+    "mode": "0755", 
+    "owner": "root", 
+    "path": "/var/tmp/hello.dir", 
+    "size": 6, 
+    "state": "directory", 
+    "uid": 0
+}
+172.16.3.216 | SUCCESS => {
+    "changed": true, 
+     .....省略.....
+
+```
+
+示例2:创建软件链接
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m file -a "src=/tmp/hi.txt path=/var/tmp/hi.link state=link"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "dest": "/var/tmp/hi.link", 
+    "gid": 0, 
+    "group": "root", 
+    "mode": "0777", 
+    "owner": "root", 
+    "size": 11, 
+    "src": "/tmp/hi.txt", 
+    "state": "link", 
+    "uid": 0
+}
+172.16.3.216 | SUCCESS => {
+    "changed": true, 
+     .....省略.....
+
+```
+
+**6、cron模块**  
+
+通过cron模块对目标主机生成计划任务  
+
+常用参数:  
+
+除了分(minute)时(hour)日(day)月(month)周(week)外  
+
+name: 本次计划任务的名称  
+
+state: present 生成(默认) \|absent 删除 (基于name)
+
+
+示例:对各主机添加每隔3分钟从time.windows.com同步时间
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m cron -a "minute=*/3 job='/usr/sbin/update time.windows.com &>/dev/null'  name=update_time"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "envs": [], 
+    "jobs": [
+        "update_time"
+    ]
+}
+172.16.3.216 | SUCCESS => {
+    "changed": true, 
+    "envs": [], 
+    "jobs": [
+        "update_time"
+    ]
+}
+
+#到node1上查看
+[root@node1 tmp]# crontab -l
+#Ansible: update_time
+*/3 * * * * /usr/sbin/update time.windows.com &>/dev/null
+
+```
+
+示例2:删除计划任务
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m cron -a "name=update_time state=absent"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "envs": [], 
+    "jobs": []
+}
+172.16.3.216 | SUCCESS => {
+    "changed": true, 
+    "envs": [], 
+    "jobs": []
+}
+#node1上查看
+[root@node1 tmp]# crontab -l
+会发现已经被删除了
+
+```
+
+**7、yum模块**  
+
+故名思义就是yum安装软件包的模块;  
+
+常用参数说明:  
+
+enablerepo,disablerepo表示启用与禁用某repo库  
+
+name 安装包名  
+
+state (`present' or` installed’, `latest')表示安装, (`absent’ or \`removed’) 表示删除  
+
+示例:通过安装epel扩展源并安装nginx
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m yum -a "name=epel-release state=installed"
+[root@ansible ~]# ansible all -m yum -a "name=nginx state=installed"
+
+```
+
+**8、service模块**  
+
+服务管理模块  
+
+常用参数:  
+
+name:服务名  
+
+state:服务状态  
+
+enabled: 是否开机启动 true\|false  
+
+runlevel: 启动级别 (systemed方式忽略)
+
+
+示例:
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible all -m service -a "name=nginx state=started enabled=true"
+到node1上查看
+[root@node1 tmp]# systemctl status nginx
+● nginx.service - The nginx HTTP and reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since 五 2018-02-09 15:54:29 CST; 1min 49s ago
+ Main PID: 10462 (nginx)
+   CGroup: /system.slice/nginx.service
+           ├─10462 nginx: master process /usr/sbin/nginx
+           └─10463 nginx: worker process
+......省略......
+```
+
+**9、script模块**  
+
+把本地的脚本传到远端执行;前提是到远端可以执行,不要把Linux下的脚本同步到windows下执行;  
+
+直接上示例:  
+
+本地ansible上的脚本:
+
+
+登录后复制  
+```
+[root@ansible ~]# cat test.sh 
+#!/bin/bash
+echo "ansible script test!" > /tmp/ansible.txt
+[root@ansible ~]# ansible all -m script -a "/root/test.sh"
+172.16.3.152 | SUCCESS => {
+    "changed": true, 
+    "rc": 0, 
+    "stderr": "Shared connection to 172.16.3.152 closed.\r\n", 
+    "stdout": "", 
+    "stdout_lines": []
+}
+172.16.3.216 | SUCCESS => {
+    "changed": true, 
+    "rc": 0, 
+    "stderr": "Shared connection to 172.16.3.216 closed.\r\n", 
+    "stdout": "", 
+    "stdout_lines": []
+}
+到node1上查看
+[root@node1 tmp]# ls
+ansible.txt  fstab.ansible  hi.txt 
+[root@node1 tmp]# cat ansible.txt
+ansible script test!
+
+```
+
+script模块这个功能可以做很多事,就看你怎么用了\~  
+
+以上是常用模块,至于其他模块的使用可通过[官方模块列表](http://docs.ansible.com/ansible/latest/list_of_all_modules.html)获得\~
+
+
+四、Playbook实战
+------------
+
+
+playbook是Ansible的配置，部署和编排的语言。他们可以描述你所希望的远程系统强制执行的政策，或者在一般的IT流程的一组步骤;形象点的说就是:如果ansible的各模块(能实现各种功能)是车间里的各工具;playbook就是指导手册,目标远程主机就是库存和原料对象.  
+
+playbook是基于YAML语言格式配置,关于[YAML](https://zh.wikipedia.org/wiki/YAML)  
+
+更多playbook[官方说明参考](http://docs.ansible.com/ansible/latest/playbooks_intro.html)
+
+
+**1、playbook的核心元素**  
+
+hosts : playbook配置文件作用的主机  
+
+tasks: 任务列表  
+
+variables: 变量  
+
+templates:包含模板语法的文本文件  
+
+handlers :由特定条件触发的任务  
+
+roles :用于层次性、结构化地组织playbook。roles 能够根据层次型结构自动装载变量文件、tasks以及handlers等
+
+
+**2、playbook运行方式**  
+
+ansible\-playbook \-\-check 只检测可能会发生的改变,但不真执行操作  
+
+ansible\-playbook \-\-list\-hosts 列出运行任务的主机  
+
+ansible\-playbook \-\-syntax\-check playbook.yaml 语法检测  
+
+ansible\-playbook \-t TAGS\_NAME playbook.yaml 只执行TAGS\_NAME任务  
+
+ansible\-playbook playbook.yaml 运行
+
+
+**3、通过playbook安装管理redis服务**
+
+
+登录后复制  
+```
+#在家目录下创建playbooks
+[root@ansible ~]# mkidr playbooks
+[root@ansible ~]# cd playbooks
+[root@ansible playbooks]# cat redis_first.yaml
+- hosts: all 
+  remote_user: root
+  tasks:
+  - name: install redis
+    yum: name=redis state=latest
+ 
+  - name: start redis
+    service: name=redis state=started
+
+```
+
+语法检测:
+
+
+登录后复制  
+```
+[root@ansible playbooks]# ansible-playbook --syntax-check redis_first.yaml 
+
+playbook: redis_first.yaml
+
+```
+
+说明语法没有 问题  
+
+将要执行的主机:
+
+
+登录后复制  
+```
+[root@ansible playbooks]# ansible-playbook --list-hosts redis_first.yaml
+playbook: redis_first.yaml
+  play #1 (all): all	TAGS: []
+    pattern: [u'all']
+    hosts (2):
+      172.16.3.216
+      172.16.3.152
+
+```
+
+执行
+
+
+登录后复制  
+```
+[root@ansible playbooks]# ansible-playbook redis_first.yaml
+PLAY [all] *****************************************************************************************************************
+TASK [Gathering Facts] *****************************************************************************************************
+ok: [172.16.3.216]
+ok: [172.16.3.152]
+TASK [install redis] *******************************************************************************************************
+changed: [172.16.3.216]
+changed: [172.16.3.152]
+TASK [start redis] *********************************************************************************************************
+changed: [172.16.3.152]
+changed: [172.16.3.216]
+PLAY RECAP *****************************************************************************************************************
+172.16.3.152               : ok=3    changed=2    unreachable=0    failed=0   
+172.16.3.216               : ok=3    changed=2    unreachable=0    failed=0   
+
+```
+
+说明:  
+
+自上而下列出了三个任务,分别是[Gathering Facts] , [install redis], [start redis],其中各主机上成功为ok\=3,有两项任务执行结果是changed  
+
+不可达 和失败的任务均为0;
+
+
+由于上面的操作是直接安装redis服务并启动,并没有配置文件,这还不能往生产环境中使用,生产环境中的redis肯定有不同的配置项,因此需要在安装时提供配置文件
+
+
+**4、带配置文件的安装管理redis**  
+
+首先复制一个redis.conf到本地并进行修改
+
+
+登录后复制  
+```
+[root@ansible ~]# ansible 172.16.3.152 -m fetch -a "src=/etc/redis.conf dest=./"
+[root@ansible ~]# mv /root/172.16.3.152/etc/redis.conf  /root/playbooks/redis.conf
+修改bind 0.0.0.0
+
+cat redis_second.yaml
+- hosts: all                   #所有远程主机
+  remote_user: root      #以远程主机上root用户执行
+  tasks:                        #任务
+  - name: install redis      #任务之安装
+    yum: name=redis state=latest        #动作调用yum模块安装
+  - name: copy config file     #任务之复制同步配置文件到远程目标主机
+    copy: src=/root/playbooks/redis.conf dest=/etc/redis.conf owner=redis       #动作copy模块执行
+    notify: restart redis      #触发的动作
+    tags: configfile         #任务标记名configfile
+  - name: start redis      #任务之启动redis
+    service: name=redis state=started    #动作调用sevice模块
+  handlers:              #特定情况下,接收到其他任务的通知时被触发
+  - name: restart redis
+    service: name=redis state=restarted
+
+```
+
+再次测试并执行
+
+
+登录后复制  
+```
+[root@ansible playbooks]# ansible-playbook  redis_second.yaml 
+
+PLAY [all] ****************************************************************************************************************
+TASK [Gathering Facts] ****************************************************************************************************
+ok: [172.16.3.152]
+ok: [172.16.3.216]
+TASK [install redis] ******************************************************************************************************
+ok: [172.16.3.216]
+ok: [172.16.3.152]
+TASK [copy config file] ***************************************************************************************************
+changed: [172.16.3.152]
+changed: [172.16.3.216]
+TASK [start redis] ********************************************************************************************************
+ok: [172.16.3.152]
+ok: [172.16.3.216]
+RUNNING HANDLER [restart redis] *******************************************************************************************
+changed: [172.16.3.152]
+changed: [172.16.3.216]
+PLAY RECAP ****************************************************************************************************************
+172.16.3.152               : ok=5    changed=2    unreachable=0    failed=0   
+172.16.3.216               : ok=5    changed=2    unreachable=0    failed=0 
+
+```
+
+可以发现只是加了一个配置文件,所有的任务都执行了,可否只应用新添加的任务?当然可以  
+
+这里就要通过  
+
+ansible -playbook -t TAGS_NAME 来执行了  
+
+可以把redis.conf中添加一个登录密码再执行测试下:
+
+
+登录后复制  
+```
+[root@ansible playbooks]# ansible-playbook -t configfile redis_second.yaml 
+PLAY [all] ****************************************************************************************************************
+TASK [Gathering Facts] ****************************************************************************************************
+ok: [172.16.3.152]
+ok: [172.16.3.216]
+TASK [copy config file] ***************************************************************************************************
+changed: [172.16.3.216]
+changed: [172.16.3.152]
+RUNNING HANDLER [restart redis] *******************************************************************************************
+changed: [172.16.3.152]
+changed: [172.16.3.216]
+PLAY RECAP ****************************************************************************************************************
+172.16.3.152               : ok=3    changed=2    unreachable=0    failed=0   
+172.16.3.216               : ok=3    changed=2    unreachable=0    failed=0 
+
+```
+
+以上执行结果就没有 了安装与启动的步骤\~只有更新和重启!  
+
+[更多playbook使用示例请添加链接描述](https://github.com/ansible/ansible-examples)
+
+
+总结:
+---
+
+
+ansible通过常用模块在命令行就可以针对主机清单来管理配置远程主机,无需要代理客户端程序,但需要目标主机有ssh和python2\.4\+;基于  
+
+ssh协议既可以通过用户名和密码,也可以通过私钥,推荐使用私钥;  
+
+windows上需要安装powershell及winrm服务也可以做到,关于这方面 可以参考我之前的博客 [ansible自动化管理windows](http://blog.51cto.com/dyc2005/2064746)  
+
+通过ansib-doc来获取模块信息及指定模块帮助信息;  
+
+ansible-playbook 基于YAML语法配置;可以对playbook文件进行测试,解析并执行应用于指定无端主机;非常方便我们统一编排分发管理远程主机;  
+
+本文旨在入门;后续会针对playbook的roles角色及其他更多强大功能再进行详细说明;如有不当之处欢迎留言交流!
