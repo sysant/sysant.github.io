@@ -1,8 +1,12 @@
 - name: 运维咖啡吧 
   url: https://blog.ops-coffee.cn/
-  src: tech
+  src: life 
 
 - name: sysant博客 
   url: https://blog.51cto.com/dyc2005
-  src: 51cto 
+  src: life
+
+- name: 码志
+  url: http://mazhuang.org
+  src: life 
 
