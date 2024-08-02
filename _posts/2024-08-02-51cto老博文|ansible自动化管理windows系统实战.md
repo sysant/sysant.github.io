@@ -1,9 +1,9 @@
 ---
 layout: post
-title: 
+title: ansible自动化管理windows系统实战 
 categories: [51cto老博文]
-description: 
-keywords: 
+description: 通过ansible 和windows powershell管理windwos
+keywords: ansible, powershell,自动化管理windows
 mermaid: false
 sequence: false
 flow: false
