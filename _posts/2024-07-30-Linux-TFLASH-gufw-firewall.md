@@ -1,9 +1,9 @@
 ---
 layout: post
-title: 
+title: T-FLASH卡做成Ubuntu Linux开机登录钥匙和gufw防火墙配置 
 categories: [51cto老博文]
-description: 
-keywords: 
+description: 把T-flash卡做成ubuntu办公笔记本登录的电子 钥匙，结合gufw防火墙配置，提高笔记本安全 
+keywords: 电子钥匙，开机凭证，gufw防火墙，shell 
 mermaid: false
 sequence: false
 flow: false
