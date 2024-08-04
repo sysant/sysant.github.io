@@ -110,7 +110,7 @@ auto\_accept: True
 
 如图：Unaccepted Keys:中出现两个等待授权认证的minon
 
-![saltstack001](/images/saltstack/salt001.png)
+![saltstack001](/images/saltstack/001.png)
 
 ```bash
 # salt-key -A   
@@ -127,7 +127,7 @@ auto\_accept: True
 
 如图：
 
-![saltstack_02](/images/saltstack/salt002.png")
+![saltstack_02](/images/saltstack/002.png")
 
 
 到此基本的saltstack  master minion 环境安装部署基本配置完成
@@ -186,7 +186,7 @@ a）、cmd模块
 
        salt '\*' cmd.run "echo $HOSTNAME"      这里可以远程执行shell命令，执行结果会返回
 
-![saltstack_03](/images/saltstack/salt003.png)
+![saltstack_03](/images/saltstack/003.png)
 
 b)、文件上传与下载
 
@@ -194,11 +194,11 @@ b)、文件上传与下载
 
         将/srv/salt/files/test.txt  推送到minion\_152 /tmp/下也叫test.txt
 
-![saltstack_04](/images/saltstack/salt004.png)
+![saltstack_04](/images/saltstack/004.png)
 
          到minion\_152 tmp目录下查看
 
-![saltstack_05](/images/salt/salt005.png) 
+![saltstack_05](/images/salt/005.png) 
 
        同理可以通过 cp.push从minion上下载文件
 
@@ -208,6 +208,6 @@ b)、文件上传与下载
 
                         /var/cache/salt/master/minions/minion\-id/files目录
 
-![saltstack_06](/images/saltstack/salt006.png)
+![saltstack_06](/images/saltstack/006.png)
 
 其他的模块主参考官方文档。这里不再多说。  
