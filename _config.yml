@@ -14,6 +14,8 @@ encoding: "utf-8"
 since: 2007
 # 源码仓库，请替换成自己的
 repository: sysant/sysant.github.io.git
+# 大盘信息
+repository: http://47.121.194.76:10800/
 # 对 css 和 js 资源的 cdn 加速配置
 cdn:
     jsdelivr:
