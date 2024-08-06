@@ -113,7 +113,6 @@ T-FLASH卡一张
 ![把T-FLASH卡做成Ubuntu开机登录钥匙和gufw防火墙配置](/images/把T-FLASH卡做成Ubuntu开机登录钥匙和gufw防火墙配置/把T-FLASH卡做成Ubuntu开机登录钥匙和gufw防火墙配置_防火墙_10.png)
 
 
-登录后复制  
 ```
 ### 主要作用开机运行并检查 并运行开机守护进行(循环检查)
 # cat /etc/rc.local

@@ -54,8 +54,6 @@ Ansible 从1\.7\+版本开始支持Windows，但管理机必须为Linux系统，
 
 安装pip及相关依赖
 
-
-登录后复制  
 ```bash
 下载pip
 # wget https://bootstrap.pypa.io/get-pip.py
@@ -67,8 +65,6 @@ Ansible 从1\.7\+版本开始支持Windows，但管理机必须为Linux系统，
 
 **3、源码安装ansible**
 
-
-登录后复制  
 ```bash
 # git clone git://github.com/ansible/ansible.git --recursive
 # cd ./ansible
@@ -83,7 +79,6 @@ cat /etc/ansible/hosts
 注:可以把这步添加到开机自启中;
 
 
-登录后复制  
 ```bash
 [win7]
 172.16.3.188 ansible_ssh_user="virtual" ansible_ssh_pass="myself." ansible_ssh_port=5985 ansible_connection="winrm" ansible_winrm_server_cert_validation=ignore
@@ -128,8 +123,6 @@ c、升级PowerShell至3\.0
 
 保存以下脚本为upgrade\_to\_ps3\.ps1
 
-
-登录后复制  
 ```bash
 # Powershell script to upgrade a PowerShell 2.0 system to PowerShell 3.0 
 # based on http://occasionalutility.blogspot.com/2013/11/everyday-powershell-part-7-powershell.html 
@@ -242,7 +235,6 @@ winrm 服务默认都是未启用的状态;注意以下操作在cmd中执行,而
 对winrm服务进行基础配置：
 
 
-登录后复制  
 ```bash
 winrm quickconfig
 C:\Users\san02>winrm quickconfig
@@ -309,7 +301,6 @@ Service
 **1、查看连接状态**
 
 
-登录后复制  
 ```bash
 [root@localhost ~]# ansible win7 -m win_ping
 172.16.3.188 | SUCCESS => {
@@ -324,7 +315,6 @@ Service
 **2、获取Windows Facts**
 
 
-登录后复制  
 ```bash
 [root@localhost ~]# ansible win7 -m   setup
 172.16.3.188 | SUCCESS => {
@@ -357,14 +347,12 @@ Service
 默认是乱码,需要修改winrm模块文件
 
 
-登录后复制  
 ```bash
 sed -i "s#tdout_buffer.append(stdout)#tdout_buffer.append(stdout.decode('gbk').encode('utf-8'))#g" /usr/lib/python2.7/site-packages/winrm/protocol.py
 sed -i "s#stderr_buffer.append(stderr)#stderr_buffer.append(stderr.decode('gbk').encode('utf-8'))#g" /usr/lib/python2.7/site-packages/winrm/protocol.py
 
 ```
 
-登录后复制  
 ```bash
 a、获取ip地址
 [root@localhost ~]# ansible win7 -m raw -a "ipconfig"
@@ -420,7 +408,6 @@ SUCCESS: The process with PID 3504 (child process of PID 2328) has been terminat
 把/etc/issue文件复制到当前目录(也可以直接/etc/issue)再传送到目标主机D盘下(可以修改文件名)
 
 
-登录后复制  
 ```bash
 [root@localhost ~]# ansible win7 -m  win_copy -a "src=issue dest=D:\issue"
 172.16.3.188 | SUCCESS => {
@@ -440,7 +427,6 @@ SUCCESS: The process with PID 3504 (child process of PID 2328) has been terminat
 **5、添加用户**
 
 
-登录后复制  
 ```bash
 [root@localhost ansible]# ansible win7 -m win_user -a "name=san2 passwd=123.c0m groups=Administrators"
 172.16.3.188 | SUCCESS => {

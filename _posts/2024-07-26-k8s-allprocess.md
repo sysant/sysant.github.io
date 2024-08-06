@@ -51,7 +51,6 @@ Docker是容器运行管理的载体，只是容器的一种，它面向的是�
 
 ### 2、拉取代码到本地：
 
-登录后复制  
 ```bash
 $ git clone  https://github.com/sysant/Strudy_Tornado.git
 $ cd Strudy_Tornado/ShuangSeQiu
@@ -63,7 +62,6 @@ $ cat Dockerfile*
 ```
 ### 3、编写Dockerfile
 
-登录后复制  
 ```bash
 FROM python:3.6.8
 WORKDIR ./ShuangSeQiu
@@ -76,7 +74,6 @@ ENTRYPOINT ["python", "./qiu.py"]
 ```
 ### 4、制作镜像
 
-登录后复制  
 ```bash
 #制作镜像，注意本地要安装配置python3.6.8 且安装好pip3
 $ docker build -t qiu:v1.0 .
@@ -118,7 +115,6 @@ qiu                          v1.0      cc822b291e8b   38 seconds ago   932MB
 ```
 ### 5、上传镜像
 
-登录后复制  
 ```
 # 登录镜像仓库；阿里云仓库
 $ docker login --username=USER@aliyun.com registry.cn-hangzhou.aliyuncs.com*
@@ -128,7 +124,6 @@ $ docker login --username=USER@aliyun.com registry.cn-hangzhou.aliyuncs.com*
 
 对镜像qiu:v1\.0打tag并上传
 
-登录后复制  
 ```bash
 $ docker tag cc822b291e8b registry.cn-hangzhou.aliyuncs.com/san2005/study:qiu_v1.0
 ```
@@ -137,7 +132,6 @@ $ docker tag cc822b291e8b registry.cn-hangzhou.aliyuncs.com/san2005/study:qiu_v1
 
 ### 1、通过docker运行
 
-登录后复制  
 ```bash
 # 运行镜像生成运行容器
 $ docker run -d -p 10800:10800 qiu:v1.0
@@ -173,7 +167,6 @@ curl http://172\.21\.161\.185:10800
 
 脚本内容用户名和密码需要替换成对应的阿里账号和密码
 
-登录后复制  
 ```bash
 $ cat ali-secret.sh
 #!/bin/sh
@@ -191,7 +184,6 @@ secret创建完成！
 
 cat qiu\-deployment.yaml
 
-登录后复制  
 ```bash
 apiVersion: apps/v1
 kind: Deployment
@@ -217,7 +209,7 @@ spec:
       - name: qiu
         image: registry.cn-hangzhou.aliyuncs.com/san2005/study:qiu_v1.0
 ```
-登录后复制  
+
 ```bash
 # 应用qiu-deployment.yaml
 $ kubectl alloy -f qiu-deployment.yaml
@@ -245,7 +237,6 @@ deployment.apps/qiu-deployment created
 
 cat qiu\-service.yaml
 
-登录后复制  
 ```bash
 apiVersion: v1
 kind: Service
@@ -283,7 +274,6 @@ curl [http://192.168.85.2:31509](http://192.168.85.2:31509)
 
 ### 4、业务访问验证
 
-登录后复制  
 ```bash
 $ kubectl port-forward --address=0.0.0.0 service/qiu-deployment 10800:10800
 Forwarding from 0.0.0.0:10800 -> 10800
@@ -301,7 +291,6 @@ $ hostname -I
 
 验证通过service访问的负载均衡
 
-登录后复制  
 ```bash
 [root@AlmaLinux8 qiu]# kubectl logs -f qiu-deployment-8557879b78-rrvhw
 [I 231018 09:47:23 web:2243] 200 GET / (10.244.0.1) 6.25ms

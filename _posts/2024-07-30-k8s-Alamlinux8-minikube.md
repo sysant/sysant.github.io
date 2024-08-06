@@ -37,7 +37,6 @@ alamlinux8.8 minikube-1.31.2 docker-ce-24.0.6-1
 **1、安装docker\-ce**
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 tmp]# wget http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
 [root@AlmaLinux8 tmp]# yum list docker-ce --showduplicates | sort -r |head -n 3
@@ -78,7 +77,6 @@ Docker version 24.0.6, build ed223bc
 重启docker服务
 
 
-登录后复制  
 ```
 systemctl daemon-reload
 systemctl restart docker
@@ -88,7 +86,6 @@ systemctl restart docker
 **3、安装minikube**
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 tmp]# curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm
 
@@ -102,7 +99,6 @@ echo "fs.protected_regular=0" >>/etc/sysctl.conf
 **4、minikube安装单节点k8s集群**
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 cache]# minikube start --force --driver=docker --image-repository=registry.cn-hangzhou.aliyuncs.com/google_containers
 * Almalinux 8.8 上的 minikube v1.31.2
@@ -138,7 +134,6 @@ echo "fs.protected_regular=0" >>/etc/sysctl.conf
 原生kubectl工具
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 cache]# curl -Lo kubectl   http://kubernetes.oss-cn-hangzhou.aliyuncs.com/kubernetes-release/release/v1.22.1/bin/linux/amd64/kubectl
 [root@AlmaLinux8 cache]# mv kubectl /usr/bin
@@ -170,7 +165,6 @@ kube-system   storage-provisioner                1/1     Running   1 (4m22s ago)
 **6、补充minikube命令**
 
 
-登录后复制  
 ```
 # 检查安装结果
 minikube help
@@ -213,7 +207,6 @@ minikube load xxx.tar
 **7、开启dashboard**
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 ~]# minikube dashboard --url
 * 正在验证 dashboard 运行情况 ...
@@ -248,7 +241,6 @@ deployment测试
 [root@AlmaLinux8 k8s]# cat nginx-deployment.yaml
 
 
-登录后复制  
 ```
 apiVersion: apps/v1
 kind: Deployment
@@ -278,7 +270,6 @@ spec:
 应用yaml文件
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 k8s]# kubectl apply -f nginx-deployment.yaml 
 deployment.apps/nginx-deployment created
@@ -294,7 +285,6 @@ nginx-deployment-7777f55dd5-rnpld   1/1     Running   0          6s
 临时手动将nginx端口对外开放
 
 
-登录后复制  
 ```
 [root@AlmaLinux8 k8s]# kubectl port-forward nginx-deployment-7777f55dd5-rnpld  --address=0.0.0.0 8080:80
 Forwarding from 0.0.0.0:8080 -> 80

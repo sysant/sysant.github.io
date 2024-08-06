@@ -52,7 +52,6 @@ saltstack安装部署与使用入门
 
 修改主配置文件/etc/salt/master 内容如下：
 
-登录后复制执行
 ```bash
 # cat master |egrep -v '(^$|^#)'
 interface: 0.0.0.0                #侦听地址
@@ -85,7 +84,6 @@ salt 3007.1 (Chlorine)
 
 修改配置文件cat /etc/salt/minion
 
-登录后复制  
 ```bash
 # cat minion |egrep -v '(^$|^#)'
 default_include: minion.d/*.conf      

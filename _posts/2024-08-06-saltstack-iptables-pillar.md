@@ -33,7 +33,6 @@ salt安装配置这里忽略可查看之前文章
 
 1、针对10.8.11.171配置防火墙规则,pillar定义规则
 
-登录后复制执行  
 
 ```bash
 # cat /srv/pillar/top.sls

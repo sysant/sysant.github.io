@@ -18,7 +18,7 @@ saltstack的grains与pillar使用入门
 
 一、grains与pillar简介  
 
-        grains是minion启动时加载，在minion运行过程中不会发生变化，所以是**静态数据**。grains数据的定制可以在各minion端，也可以放在master端;grains中包含许多的信息，如：运行的内核版本，操作系统，网络接口地址，MAC地址，cpu，内存等等信息。
+   grains是minion启动时加载，在minion运行过程中不会发生变化，所以是**静态数据**。grains数据的定制可以在各minion端，也可以放在master端;grains中包含许多的信息，如：运行的内核版本，操作系统，网络接口地址，MAC地址，cpu，内存等等信息。
 Pillar是Salt用来分发全局变量到所有或指定minion的一个定制接口，所以相对grains来说可以称为动态的数据，保存在master端。
 
 由于涉及的配置文件采用yaml格式，如果对yaml语法不在熟悉请访问这里
@@ -35,19 +35,16 @@ saltstack的安装部署请看这里http://dyc2005.blog.51cto.com/270872/1967147
 
 1、获取minion的grains所有数据
 
-登录后复制  
 ```
 salt "minion_152" grains.items 
 
 ```
-登录后复制  
 类似如图：
 
 ![saltstack grains与pillar使用和订制_saltstack](/images/saltstack/salt01.png)
 
 2、获取单项grains值
 
-登录后复制  
 ```bash
 # salt "minion_152" grains.item os 
 ```
@@ -57,7 +54,6 @@ salt "minion_152" grains.items
 
 3、获取grains中的所有项(键)
 
-登录后复制  
 ```bash
 # salt "minion_152" grains.ls     #以minion_152上的为例
 ```
@@ -79,7 +75,6 @@ salt "minion_152" grains.items
 
 创建一个test.conf 内容如下：
 
-登录后复制  
 ```
 grains:               
    Data:
@@ -88,7 +83,7 @@ grains:
       - wgdbl_game
 ```
 重启minion
-登录后复制  
+
 ```
 # salt "minion_152" grains.items
 
@@ -101,13 +96,12 @@ grains:
 
 在master操作
 
-登录后复制  
 ```
 mkdir -pv /srv/salt/_grains
 cd  /srv/salt/_grains
 cat hello.py
 ```
-登录后复制  
+
 ```
 #!/usr/bin/python
 def GrainsHello():    
@@ -119,7 +113,6 @@ def GrainsHello():
 ```
 在服务端写好脚本再同步刷新到指定minion
 
-登录后复制  
 ```
 # salt "minion_152" saltutil.sync_grains
 
@@ -152,7 +145,6 @@ def GrainsHello():
 pillar_opts: True
 并重启salt\-master
 
-登录后复制  
 ```
 # salt  "minion_152" pillar.data
 
@@ -168,7 +160,6 @@ pillar_opts: True
 
 取消529 -532 的注释
 
-登录后复制  
 ```
 529 pillar_roots:
 530   base:
@@ -185,7 +176,7 @@ mkdir -pv /srv/pillar
 
 创建pillar顶层入口文件（相当于目录）top.sls,注意必须要以sls后缀。
 
-登录后复制  
+
 ```
 cat top.sls
 base:   "*":      
@@ -197,7 +188,6 @@ base:   "*":
 
 cat data.sls
 
-登录后复制  
 ```
 project_name: san
 subject:
@@ -210,7 +200,7 @@ subject:
 
 cat minion152.sls
 
-登录后执行
+
 ```
 Minion_152: info
 HostName:
@@ -223,7 +213,6 @@ game:
 ```
 向minion同步pillar数据
 
-登录后执行
 ```
 # salt "minion_152" saltutil.refresh_pillar
 
@@ -232,7 +221,6 @@ game:
 
 ![saltstack grains与pillar使用和订制_saltstack_09](/images/saltstack/salt09.png)
 
-登录后执行  
 ```
 # salt "minion_152" pillar.data
 或
@@ -251,7 +239,6 @@ game:
 
 cat top.sls
 
-登录后复制  
 ```
 base:
    "*":
@@ -264,7 +251,6 @@ base:
 创建osinfo.sls
 cat osinfo.sls
 
-登录后执行  
 ```
 OS_INFO:
     - {{ grains.os}}
@@ -275,7 +261,6 @@ OS_INFO:
 ```
 刷新pillar数据
 
-登录后复制  
 ```
 # salt "minion_152" saltutil.refresh_pillar
 
