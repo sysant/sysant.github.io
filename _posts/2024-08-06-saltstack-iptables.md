@@ -14,8 +14,7 @@ mindmap2: false
 
 saltstack基于pillar统一配置iptables防火墙实战
 
-
-一、概述
+## 一、概述
 
 grains是minion启动时加载，在minion运行过程中不会发生变化，所以是静态数据。grains数据的定制可以在各minion端，也可以放在master端;grains中包含许多的信息，如：运行的内核版本，操作系统，网络接口地址，MAC地址，cpu，内存等等信息。  
 
@@ -30,13 +29,12 @@ saltstack redhat系上[yum源地址](https://repo.saltstack.com/yum/redhat/)
 
 salt安装配置这里忽略可查看之前文章
 
+## 二、配置主机pillar
 
-二、配置主机pillar
-
-#**1、针对10\.8\.11\.171配置防火墙规则,pillar定义规则**
+### 1、针对10\.8\.11\.171配置防火墙规则,pillar定义规则
 
 
-登录后复制  
+登录后复制执行  
 ```
 # cat /srv/pillar/top.sls
 base:
@@ -285,7 +283,6 @@ iptables-service:
 
 三、规则推送
 ------
-
 
 **1、查看主机的pillar**
 
