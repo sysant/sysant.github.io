@@ -4,7 +4,12 @@ title: saltstack基于pillar统一配置iptables防火墙实战
 categories: [saltstack]
 description: saltstack通过pillar配置管理iptalbes防火墙实战管理
 keywords: saltstack, pillar, iptables 
-
+mermaid: false
+sequence: false
+flow: false
+mathjax: false
+mindmap: false
+mindmap2: false
 ---
 
 saltstack基于pillar统一配置iptables防火墙实战
