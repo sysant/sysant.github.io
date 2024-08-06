@@ -14,7 +14,7 @@ mindmap2: false
 
 saltstack基于pillar统一配置iptables防火墙实战
 
-一、概述
+## 一、概述
 
 grains是minion启动时加载，在minion运行过程中不会发生变化，所以是静态数据。grains数据的定制可以在各minion端，也可以放在master端;grains中包含许多的信息，如：运行的内核版本，操作系统，网络接口地址，MAC地址，cpu，内存等等信息。  
 
@@ -29,12 +29,12 @@ saltstack redhat系上[yum源地址](https://repo.saltstack.com/yum/redhat/)
 
 salt安装配置这里忽略可查看之前文章
 
-二、配置主机pillar
+## 二、配置主机pillar
 
 1、针对10.8.11.171配置防火墙规则,pillar定义规则
 
-
 登录后复制执行  
+
 ```bash
 # cat /srv/pillar/top.sls
 base:
@@ -64,7 +64,7 @@ open_allow:
     procto: 'tcp'
 
 ### 访问外面的服务，其他访问服务类似
-#cat  /srv/pillar/iptables/access/ntp.sls
+# cat  /srv/pillar/iptables/access/ntp.sls
 out_allow:
   ntp_out_allow:
     port: 123
@@ -76,7 +76,7 @@ out_allow:
 
 2、salt state配置
 
-登录后复制执行
+
 ```bash
 # cat /srv/salt/top.sls
 base:
@@ -282,7 +282,6 @@ iptables-service:
 
 1、查看主机的pillar
 
-登录后复制  
 ```bash
 #  salt 10.8.11.171 pillar.data
 ```
@@ -295,8 +294,6 @@ iptables-service:
 
 2、推送到主机
 
-
-登录后复制  
 ```bash
 # salt 10.8.11.171 state.sls iptables.init
 
