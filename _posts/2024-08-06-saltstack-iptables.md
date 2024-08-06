@@ -3,13 +3,14 @@ layout: post
 title: saltstack基于pillar统一配置iptables防火墙实战 
 categories: [saltstack]
 description: saltstack通过pillar配置管理iptalbes防火墙实战管理
-keywords: saltstack,pillar,iptables 
+keywords: saltstack, pillar, iptables 
 mermaid: false
 sequence: false
 flow: false
 mathjax: false
 mindmap: false
 mindmap2: false
+
 ---
 
 saltstack基于pillar统一配置iptables防火墙实战
@@ -35,7 +36,7 @@ salt安装配置这里忽略可查看之前文章
 
 
 登录后复制执行  
-```
+```bash
 # cat /srv/pillar/top.sls
 base:
   10.8.11.171:
@@ -72,15 +73,17 @@ out_allow:
 
 ```
 
+
+
 说明：下次10\.8\.11\.171主机要开放服务时就修改/srv/pillar/top.sls文件挂载要开放的服务（\- iptables.open.xxx）这个xxx要在/srv/pillar/iptables/open/目录下xxx.sls 格式如前页的web.sls;添加出去访问服务时（\- iptables.access.yyy）这个yyy要在/srv/pillar/iptables/access/yyy.sls格式如前面的ntp.sls;当要添加白名单ip服务时（\- iptables.whiteip.zzz）这个zzz.sls 要在/srv/pillar/iptables/whiteip/zzz.sls 格式类似offices.sls
 
 
-**2、salt state配置**
+### 2、salt state配置
 
 
-登录后复制  
-```
-cat /srv/salt/top.sls
+登录后复制执行
+```yaml
+# cat /srv/salt/top.sls
 base:
   10.8.11.171:
   - base.env_init
@@ -278,21 +281,23 @@ iptables-service:
 
 ```
 
+
+
 说明：在推送iptables规则前清除已有的规则;再从pillar的配置文件循环读取并配置防火规则;最后设置iptables默认策略INPUT OUTPUT FORWARD 为DROP; 有人可能就要问了，为舍搞这么复杂，防火开起来开放一些规则就行了，为啥非得把默认策略设置DROP，进出都得要规则？如果这么问请[看下这里](http://blog.51cto.com/dyc2005/2106138)～
 
 
 三、规则推送
 ------
 
-**1、查看主机的pillar**
+### 1、查看主机的pillar
 
 
 登录后复制  
-```
+```bash
 #  salt 10.8.11.171 pillar.data
-* 1.
-
 ```
+
+
 
 如图：可以看出以上的配置白名单ip与开放和访问服务端口  
 
@@ -300,12 +305,11 @@ iptables-service:
 
 ![saltstack基于pillar统一配置iptables防火墙实战](/images/saltstack/pillar02.png)
 
-
-**2、推送到主机**
+### 2、推送到主机
 
 
 登录后复制  
-```
+```bash
 # salt 10.8.11.171 state.sls iptables.init
 
 最后出现类似下面的表示已经推送配置成功
