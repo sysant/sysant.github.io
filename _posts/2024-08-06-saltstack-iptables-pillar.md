@@ -102,9 +102,9 @@ base:
 
 如图：可以看出以上的配置白名单ip与开放和访问服务端口  
 
-![saltstack基于pillar统一配置iptables防火墙实战](images/saltstack基于pillar统一配置iptables防火墙实战/saltstack基于pillar统一配置iptables防火墙实战\_salt.png)  
+![saltstack_pillar_iptables01](/images/saltstack/pillar01.png)  
 
-![saltstack基于pillar统一配置iptables防火墙实战](images/saltstack基于pillar统一配置iptables防火墙实战/saltstack基于pillar统一配置iptables防火墙实战\_salt\_02\.png)
+![saltstack_pillar_iptables02](/images/saltstack/pillar02.png)
 
 
 2. 推送到主机
@@ -129,7 +129,7 @@ Total run time:    3.120 s
 
 如图：  
 
-![saltstack基于pillar统一配置iptables防火墙实战](images/saltstack基于pillar统一配置iptables防火墙实战/saltstack基于pillar统一配置iptables防火墙实战pillar_03.png)  
+![saltstack_pillar_iptables03](/images/saltstack/pillar03.png)  
 
 开放的白名单和开放的服务以及能出去访问的服务已经都有了;另外默认策略已经是DROP；这样只有开放的白名单和允许出去访问服务才能出去，很好的阻止了反弹式木\-马主动出去访问的情况，同时只允许开放的服务才能进来;其他情况一律拒绝;不过需要注意的是，在生产线上改造时，勿必确认好主机开放的服务和需要出去访问或调用其他主机的服务端口，否则会误伤，你懂滴！为什么非得搞这么严格这么麻烦，这样安全啊，防止反弹式木\-马效果好呀～！  
 至些salt 通过pillar 配置防火墙规则完成！下次再写个基于zabbix的监控，监控被droped的包，再报警，这样可以及时发现防火墙状态和问题～敬请期待吧～
