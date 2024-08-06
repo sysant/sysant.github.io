@@ -10,7 +10,6 @@ flow: false
 mathjax: false
 mindmap: false
 mindmap2: false
-
 ---
 
 saltstack基于pillar统一配置iptables防火墙实战
@@ -32,7 +31,7 @@ salt安装配置这里忽略可查看之前文章
 
 ## 二、配置主机pillar
 
-### 1、针对10\.8\.11\.171配置防火墙规则,pillar定义规则
+### 1、针对10.8.11.171配置防火墙规则,pillar定义规则
 
 
 登录后复制执行  
@@ -73,13 +72,9 @@ out_allow:
 
 ```
 
-
-
 说明：下次10\.8\.11\.171主机要开放服务时就修改/srv/pillar/top.sls文件挂载要开放的服务（\- iptables.open.xxx）这个xxx要在/srv/pillar/iptables/open/目录下xxx.sls 格式如前页的web.sls;添加出去访问服务时（\- iptables.access.yyy）这个yyy要在/srv/pillar/iptables/access/yyy.sls格式如前面的ntp.sls;当要添加白名单ip服务时（\- iptables.whiteip.zzz）这个zzz.sls 要在/srv/pillar/iptables/whiteip/zzz.sls 格式类似offices.sls
 
-
 ### 2、salt state配置
-
 
 登录后复制执行
 ```yaml
@@ -281,23 +276,17 @@ iptables-service:
 
 ```
 
-
-
 说明：在推送iptables规则前清除已有的规则;再从pillar的配置文件循环读取并配置防火规则;最后设置iptables默认策略INPUT OUTPUT FORWARD 为DROP; 有人可能就要问了，为舍搞这么复杂，防火开起来开放一些规则就行了，为啥非得把默认策略设置DROP，进出都得要规则？如果这么问请[看下这里](http://blog.51cto.com/dyc2005/2106138)～
-
 
 三、规则推送
 ------
 
 ### 1、查看主机的pillar
 
-
 登录后复制  
 ```bash
 #  salt 10.8.11.171 pillar.data
 ```
-
-
 
 如图：可以看出以上的配置白名单ip与开放和访问服务端口  
 
@@ -333,7 +322,6 @@ Total run time:    3.120 s
 开放的白名单和开放的服务以及能出去访问的服务已经都有了;另外默认策略已经是DROP；这样只有开放的白名单和允许出去访问服务才能出去，很好的阻止了反弹式木\-马主动出去访问的情况，同时只允许开放的服务才能进来;其他情况一律拒绝;不过需要注意的是，在生产线上改造时，勿必确认好主机开放的服务和需要出去访问或调用其他主机的服务端口，否则会误伤，你懂滴！为什么非得搞这么严格这么麻烦，这样安全啊，防止反弹式木\-马效果好呀～！  
 
 至些salt 通过pillar 配置防火墙规则完成！下次再写个基于zabbix的监控，监控被droped的包，再报警，这样可以及时发现防火墙状态和问题～敬请期待吧～
-
 
 本文基于生产线salt配置，是整理备忘，如有不妥之处欢迎指正与交流 ！谢谢～
 
