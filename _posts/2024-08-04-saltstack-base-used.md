@@ -74,7 +74,6 @@ salt 3007.1 (Chlorine)
 ```
 
 
-
 2、安装minion(非master上）
 
 ```bash
@@ -125,7 +124,7 @@ auto\_accept: True
 
 如图：
 
-![saltstack_02](/images/saltstack/002.png")
+![saltstack_02](/images/saltstack/002.png)
 
 
 到此基本的saltstack  master minion 环境安装部署基本配置完成
@@ -196,7 +195,7 @@ b)、文件上传与下载
 
          到minion\_152 tmp目录下查看
 
-![saltstack_05](/images/salt/005.png) 
+![saltstack_05](/images/saltstack/005.png) 
 
        同理可以通过 cp.push从minion上下载文件
 
