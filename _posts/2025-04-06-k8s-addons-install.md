@@ -1,9 +1,9 @@
 ---
 layout: post
 title: kubernetes集群安装Addons组件
-categories: [k8s,kubernetes,ingress,helm,openelb,metrics-serverkrm]
+categories: [k8s,kubernetes,ingress,helm,openelb,metrics-server,krm]
 description: kebernetes集群安装ingress,openelb,helm,metrics-server,krm组件
-keywords: rocky9,kubeadm,k8s,kubernetes,calico,coredns
+keywords: openelb,helm,ingress,metrics-server,krm大盘 
 mermaid: false
 sequence: false
 flow: false
@@ -399,6 +399,20 @@ krm 登录 http://192.168.1.101:32649/
 ![krm03](/images/k8s/krm03.png)
 ![krm04](/images/k8s/krm04.png)
 
+将krm访问地址通过openelb组件功能访问：
+```
+# kubectl edit svc krm-frontend -n krm
+将 type: NodePort 修改为 LoadBalancer
+添加注解：
+metadata:
+  annotations:
+    lb.kubesphere.io/v1alpha1: openelb
+保存退出
+kubectl get svc  -n krm
+```
+![krm05](/images/k8s/krm05.png)
 
+此时可以直接通过 http://192.168.1.73访问：
 
-
+![krm06](/images/k8s/krm06.png)
+到此以上5个功能组件安装完成！
