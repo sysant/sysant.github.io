@@ -1,3 +1,19 @@
+---
+layout: post
+title: kubernetes集群安装Addons组件
+categories: [k8s,kubernetes,ingress,helm,openelb,metrics-serverkrm]
+description: kebernetes集群安装ingress,openelb,helm,metrics-server,krm组件
+keywords: rocky9,kubeadm,k8s,kubernetes,calico,coredns
+mermaid: false
+sequence: false
+flow: false
+mathjax: false
+mindmap: false
+mindmap2: false
+---
+
+kubernetes集群安装Addons组件
+
 # 1.openelb安装 ：
 [官方参考文档](https://openelb.io/docs/getting-started/configuration/)：
 
@@ -106,7 +122,8 @@ helm list -n ns
 更新配置： helm upgrade -n NS  xxx包 .
 ```
 
-ingress安装: yaml直接安装
+# ingress安装
+yaml直接安装
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/cloud/deploy.yaml
 ```
@@ -170,7 +187,7 @@ kubectl get pod  -n kube-system -l k8s-app=metrics-server
 
 ![metrics-server02](/images/k8s/addons/metrics-server02.png)
 
-KRM大盘安装 
+# KRM大盘安装 
 
 k８s官方dashboard功能较强弱,第三方有很多,这里参考杜宽[大佬的ＫＲＭ](https://gitee.com/dukuan/krm)
 
