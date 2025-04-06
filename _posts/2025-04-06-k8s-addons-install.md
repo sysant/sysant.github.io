@@ -90,7 +90,7 @@ demoapp   LoadBalancer   10.96.106.55   192.168.1.71   80:30599/TCP   16m
 可以看到已经获取了ip　 192.168.1.71
 浏览器访问http://192.168.1.71
 
-# 2.安装helm：
+# 2.安装helm
 [官方安装参考文档](https://helm.sh/docs/) 
 [Helm客户端安装](https://helm.sh/docs/intro/install/)
 
@@ -122,7 +122,7 @@ helm list -n ns
 更新配置： helm upgrade -n NS  xxx包 .
 ```
 
-# ingress安装
+# 3.ingress安装
 yaml直接安装
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/cloud/deploy.yaml
@@ -167,7 +167,7 @@ helm install ingress-nginx -n ingress-nginx .
 
 ![ingress](/images/k8s/addons/ingress.png)
 
-# 安装metrics-server
+# 4.安装metrics-server
 [官方文档](https://github.com/kubernetes-sigs/metrics-server)
 安装 ：
 
@@ -187,7 +187,7 @@ kubectl get pod  -n kube-system -l k8s-app=metrics-server
 
 ![metrics-server02](/images/k8s/addons/metrics-server02.png)
 
-# KRM大盘安装 
+# 5.KRM大盘安装 
 
 k８s官方dashboard功能较强弱,第三方有很多,这里参考杜宽[大佬的ＫＲＭ](https://gitee.com/dukuan/krm)
 
